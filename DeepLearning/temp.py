@@ -1,15 +1,13 @@
-import numpy as np
+'''import numpy as np
 
-'''x=np.array([[1,2],[3,4]])
+x=np.array([[1,2],[3,4]])
 y=np.array([[5,6],[7,8]])
-
 print(np.concatenate((x,y),axis=1))
 print(np.vstack((x,y)))
 
 ###
 
 a=np.arange(12)
-
 print(a.reshape(3,4))
 print(a.reshape(6,-1)) #-1 => 12개로 6행. 열은 알아서
 
@@ -17,7 +15,6 @@ print(a.reshape(6,-1)) #-1 => 12개로 6행. 열은 알아서
 
 array=np.arange(30).reshape(-1,10)
 print(array)
-
 arr1,arr2=np.split(array,[3],axis=1) #[3]=> 몇개로 자를건지, axis 1이면 세로, 0이면 가로로
 print(arr1)
 print(arr2)
@@ -32,12 +29,12 @@ a2=a[:,np.newaxis] #newaxis-> ,기준 뒤에 있으면 세로 축 추가.
 print(a2.shape)
 
 ###자주쓰임!
+
 ages=np.array([18,19,25,30,28])
 print(ages[1:3]) #idx 1~2까지
 print(ages[:2])
-
 y=ages>20
-print(ages[ages>20])'
+print(ages[ages>20])
 
 ###
 
@@ -47,20 +44,19 @@ print(a[0:2,1:3])
 ###
 
 data=np.arange(16).reshape(4,-1)
-
 print(data[0])
 print(data[1,:])
 print(data[:,2])
 print(data[0:2,0:2])
 print(data[0:2,2:4])
-# ::2 -> 2개씩 건너뛰기. 1::2 -> 1다음 2개 건너뛰기
 
-numpy 곱셈 ( * )-> 행렬의 곱셈과는 다르다.;;
-골뱅이 (@) 쓰면 행렬 곱셈
+# ::2 -> 2개씩 건너뛰기. 1::2 -> 1다음 2개 건너뛰기
+#numpy 곱셈 ( * )-> 행렬의 곱셈과는 다르다.;;
+#골뱅이 (@) 쓰면 행렬 곱셈
 
 scores=np.array([[99,93,60],[98,82,93],[93,65,81],[78,82,81]])
 print(scores.mean(axis=0)) #0 -> 가로 평균
-print(scores.mean(axis=1)) #1 -> 세로 평균 '''
+print(scores.mean(axis=1)) #1 -> 세로 평균
 
 print(np.random.seed(100))
 print(np.random.rand(5))
@@ -102,14 +98,14 @@ print(x)
 df=pd.DataFrame(x)
 print(df)
 
-df.to_csv('test.csv')'''
+df.to_csv('test.csv')
+
+###
 
 import matplotlib.pyplot as plt
 %matplotlib inline
-
-#X=["Mon", "Tue", "Wed", "Thur","Fri", "Sat","Sun"]
-
-'''Y1=[15.6, 14.2, 16.3, 18.2, 17.1, 20.2, 22.4]
+X=["Mon", "Tue", "Wed", "Thur","Fri", "Sat","Sun"]
+Y1=[15.6, 14.2, 16.3, 18.2, 17.1, 20.2, 22.4]
 Y2=[20.1, 23.1, 23.8, 25.9, 23.4, 25.1, 26.3]
 
 plt.plot(X, Y1, label="Seoul")
@@ -149,4 +145,102 @@ plt.plot(X, Y2, label="Sigmoid'")
 plt.xlabel("x")
 plt.ylabel("Sigmoid(X), Sigmoid'(X)")
 plt.legend(loc="upper left")
+plt.show()'''
+
+#1번 -> [2, 4, 6]
+print("1번 -> [2, 4, 6]\n")
+
+#2번 -> [[2,4,6], [5,7,9]]
+print("2번 -> [[2,4,6], [5,7,9]]\n")
+
+#3번
+print("3번")
+import numpy as np
+arr=np.zeros(10)
+arr[4]=1
+print(arr)
+
+#4번
+print("\n4번")
+arr=np.arange(10,20)
+print(arr)
+
+#5번
+print("\n5번")
+arr=np.arange(10)
+arr=arr[::-1]
+print(arr)
+
+#6번
+print("\n6번")
+arr=np.arange(9)
+arr=arr.reshape(3,3)
+print(arr)
+
+#7번
+print("\n7번")
+arr=np.random.rand(3,3)
+print(arr)
+
+#8번
+print("\n8번")
+arr=np.random.rand(10,10)
+min=arr.min()
+max=arr.max()
+print("최솟값 =", min, "최대값 =", max)
+
+#9번
+print("\n9번")
+arr=np.ones(9)
+arr=arr.reshape(3,3)
+arr[1:-1,1:-1]=0
+print(arr)
+
+#10번
+print("\n10번")
+arr=np.zeros(25)
+arr=arr.reshape(5,5)
+arr[0::2, 1::2]=1
+arr[1::2, ::2]=1
+print(arr)
+
+#11번
+print("\n11번")
+arr=np.random.rand(3,3)
+mean = np.mean(arr)
+std = np.std(arr)
+res = (arr-mean)/std
+print(res)
+
+#12번
+print("\n12번")
+arr=np.arange(10)
+arr[5:9]=arr[5:9]*-1
+print(arr)
+
+#13번
+print("\n13번")
+arr = np.arange(0,9).reshape(3,3)
+print("원본 배열:\n",arr)
+sum=arr.sum()
+print("모든 요소의 합:", sum)
+row = arr.sum(axis=0)
+print("각 열의 합:",row);
+col = arr.sum(axis=1)
+print("각 행의 합:",col)
+
+#14번
+print("\n14번")
+x = [4,5]
+y = [7, 10]
+print("원본 벡터 :\n",x,"\n",y)
+dot = np.dot(x,y)
+print("벡터의 내적:",dot)
+
+#15번
+print("\n15번")
+import matplotlib.pyplot as plt
+%matplotlib inline
+Y = [2, 0, 3, 6, 4, 6, 8, 12, 10, 9, 18, 20, 22]
+plt.plot(Y)
 plt.show()
