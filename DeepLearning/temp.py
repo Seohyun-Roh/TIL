@@ -147,6 +147,7 @@ plt.ylabel("Sigmoid(X), Sigmoid'(X)")
 plt.legend(loc="upper left")
 plt.show()'''
 
+'''
 #1번 -> [2, 4, 6]
 print("1번 -> [2, 4, 6]\n")
 
@@ -243,4 +244,107 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 Y = [2, 0, 3, 6, 4, 6, 8, 12, 10, 9, 18, 20, 22]
 plt.plot(Y)
+plt.show()
+'''
+
+###
+
+#경사하강법 구현
+'''
+X = np.array([0.0, 1.0, 2.0])
+y = np.array([3.0, 3.5, 5.5])
+
+W = 0
+b = 0
+
+lrate = 0.01
+epochs = 1000
+
+n = float(len(X))
+
+for i in range(epochs):
+    y_pred = W*X + b
+    dW = (2/n) * sum(X* (y_pred-y))
+    db = (2/n) * sum(y_pred-y)
+    W = W - lrate * dW
+    b = b- lrate * db
+
+print(W, b)
+
+y_pred = W*X + b
+
+plt.scatter(X, y)
+
+plt.plot([min(X), max(X)], [min(y_pred), max(y_pred)], color='red')
+plt.show()
+
+###
+
+#선형 회귀 예제
+
+from sklearn import linear_model
+
+reg = linear_model.LinearRegression()
+
+X = [[0],[1],[2]]
+y = [3, 3.5, 5.5]
+
+reg.fit(X, y) #학습
+
+print(reg.coef_) #직선의 기울기
+print(reg.intercept_) #직선의 y절편
+print(reg.score(X, y))
+print(reg.predict([[5]]))
+
+plt.scatter(X, y, color='black')
+
+y_pred = reg.predict(X)
+
+plt.plot(X, y_pred, color='blue', linewidth=3)
+plt.show()
+
+###
+
+#선형 회귀 실습
+
+reg = linear_model.LinearRegression()
+
+X = [[174],[152],[138],[128],[186]]
+y = [71, 55, 46, 38, 88]
+
+reg.fit(X, y) #학습
+
+print(reg.predict([[165]]))
+
+plt.scatter(X, y, color='black')
+
+y_pred = reg.predict(X)
+
+plt.plot(X, y_pred, color='pink', linewidth=3)
+plt.show() '''
+
+###
+
+#선형 회귀 당뇨병 예제
+
+import matplotlib.pylab as plt
+from sklearn import linear_model
+from sklearn import datasets
+
+diabetes_X, diabetes_y = datasets.load_diabetes(return_X_y=True)
+
+diabetes_X_new = diabetes_X[:, np.newaxis, 2]
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(diabetes_X_new, diabetes_y, test_size=0.1, random_state=0)
+
+regr = linear_model.LinearRegression()
+regr.fit(X_train, y_train)
+
+y_pred = regr.predict(X_test)
+
+plt.plot(X_test, y_pred, '.')
+
+plt.scatter(X_test, y_test, color='black')
+plt.plot(X_test, y_pred, color='blue', linewidth=3)
 plt.show()
