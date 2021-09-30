@@ -321,7 +321,7 @@ plt.scatter(X, y, color='black')
 y_pred = reg.predict(X)
 
 plt.plot(X, y_pred, color='pink', linewidth=3)
-plt.show() '''
+plt.show()
 
 ###
 
@@ -347,4 +347,64 @@ plt.plot(X_test, y_pred, '.')
 
 plt.scatter(X_test, y_test, color='black')
 plt.plot(X_test, y_pred, color='blue', linewidth=3)
+plt.show()'''
+
+###
+
+#회귀 분석 과제 1번
+from sklearn import linear_model
+
+reg1 = linear_model.LinearRegression()
+
+X = [[2015], [2016], [2017], [2018], [2019]]
+y = [12, 19, 28, 37, 46]
+
+reg1.fit(X, y)
+
+print("m:",reg1.coef_)
+print("b:",reg1.intercept_)
+print("2020 매출:",reg1.predict([[2020]]))
+
+plt.scatter(X, y, color='black')
+
+y_pred = reg1.predict(X)
+
+plt.plot(X, y_pred, color='pink', linewidth=3)
+plt.show() 
+
+
+#회귀 분석 과제 2번
+reg2 = linear_model.LinearRegression()
+X = [[1930], [1940], [1950], [1960], [1970], [1980], [1990], [2010], [2016]]
+y = [59, 62, 70, 69, 71, 74, 75, 76, 78]
+
+reg2.fit(X,y)
+
+print("m:",reg2.coef_)
+print("b:",reg2.intercept_)
+print("1962년 기대 수명:",reg2.predict([[1962]]))
+
+plt.scatter(X, y, color='black')
+
+y_pred = reg2.predict(X)
+
+plt.plot(X, y_pred, color='blue', linewidth=3)
+plt.show() 
+
+
+#회귀 분석 과제 3번
+reg3 = linear_model.LinearRegression()
+X = [[30], [35], [20], [15], [3]]
+y = [90, 95, 70, 40, 10]
+
+reg3.fit(X, y)
+
+print("직선의 기울기:",reg3.coef_)
+print("직선의 y절편",reg3.intercept_)
+
+plt.scatter(X, y, color='black')
+
+y_pred = reg3.predict(X)
+
+plt.plot(X, y_pred, color='purple', linewidth=3)
 plt.show()
