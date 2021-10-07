@@ -1,6 +1,6 @@
-'''import numpy as np
+import numpy as np
 
-x=np.array([[1,2],[3,4]])
+'''x=np.array([[1,2],[3,4]])
 y=np.array([[5,6],[7,8]])
 print(np.concatenate((x,y),axis=1))
 print(np.vstack((x,y)))
@@ -98,13 +98,14 @@ print(x)
 df=pd.DataFrame(x)
 print(df)
 
-df.to_csv('test.csv')
+df.to_csv('test.csv')'''
 
 ###
 
 import matplotlib.pyplot as plt
-%matplotlib inline
-X=["Mon", "Tue", "Wed", "Thur","Fri", "Sat","Sun"]
+#%matplotlib inline
+
+'''X=["Mon", "Tue", "Wed", "Thur","Fri", "Sat","Sun"]
 Y1=[15.6, 14.2, 16.3, 18.2, 17.1, 20.2, 22.4]
 Y2=[20.1, 23.1, 23.8, 25.9, 23.4, 25.1, 26.3]
 
@@ -146,106 +147,6 @@ plt.xlabel("x")
 plt.ylabel("Sigmoid(X), Sigmoid'(X)")
 plt.legend(loc="upper left")
 plt.show()'''
-
-'''
-#1번 -> [2, 4, 6]
-print("1번 -> [2, 4, 6]\n")
-
-#2번 -> [[2,4,6], [5,7,9]]
-print("2번 -> [[2,4,6], [5,7,9]]\n")
-
-#3번
-print("3번")
-import numpy as np
-arr=np.zeros(10)
-arr[4]=1
-print(arr)
-
-#4번
-print("\n4번")
-arr=np.arange(10,20)
-print(arr)
-
-#5번
-print("\n5번")
-arr=np.arange(10)
-arr=arr[::-1]
-print(arr)
-
-#6번
-print("\n6번")
-arr=np.arange(9)
-arr=arr.reshape(3,3)
-print(arr)
-
-#7번
-print("\n7번")
-arr=np.random.rand(3,3)
-print(arr)
-
-#8번
-print("\n8번")
-arr=np.random.rand(10,10)
-min=arr.min()
-max=arr.max()
-print("최솟값 =", min, "최대값 =", max)
-
-#9번
-print("\n9번")
-arr=np.ones(9)
-arr=arr.reshape(3,3)
-arr[1:-1,1:-1]=0
-print(arr)
-
-#10번
-print("\n10번")
-arr=np.zeros(25)
-arr=arr.reshape(5,5)
-arr[0::2, 1::2]=1
-arr[1::2, ::2]=1
-print(arr)
-
-#11번
-print("\n11번")
-arr=np.random.rand(3,3)
-mean = np.mean(arr)
-std = np.std(arr)
-res = (arr-mean)/std
-print(res)
-
-#12번
-print("\n12번")
-arr=np.arange(10)
-arr[5:9]=arr[5:9]*-1
-print(arr)
-
-#13번
-print("\n13번")
-arr = np.arange(0,9).reshape(3,3)
-print("원본 배열:\n",arr)
-sum=arr.sum()
-print("모든 요소의 합:", sum)
-row = arr.sum(axis=0)
-print("각 열의 합:",row);
-col = arr.sum(axis=1)
-print("각 행의 합:",col)
-
-#14번
-print("\n14번")
-x = [4,5]
-y = [7, 10]
-print("원본 벡터 :\n",x,"\n",y)
-dot = np.dot(x,y)
-print("벡터의 내적:",dot)
-
-#15번
-print("\n15번")
-import matplotlib.pyplot as plt
-%matplotlib inline
-Y = [2, 0, 3, 6, 4, 6, 8, 12, 10, 9, 18, 20, 22]
-plt.plot(Y)
-plt.show()
-'''
 
 ###
 
@@ -321,7 +222,7 @@ plt.scatter(X, y, color='black')
 y_pred = reg.predict(X)
 
 plt.plot(X, y_pred, color='pink', linewidth=3)
-plt.show()
+plt.show() 
 
 ###
 
@@ -347,10 +248,11 @@ plt.plot(X_test, y_pred, '.')
 
 plt.scatter(X_test, y_test, color='black')
 plt.plot(X_test, y_pred, color='blue', linewidth=3)
-plt.show()'''
+plt.show() '''
 
 ###
 
+'''
 #회귀 분석 과제 1번
 from sklearn import linear_model
 
@@ -408,3 +310,167 @@ y_pred = reg3.predict(X)
 
 plt.plot(X, y_pred, color='purple', linewidth=3)
 plt.show()
+'''
+
+###
+
+#p.185 Mini Project: 퍼셉트론으로 분류
+'''
+import numpy as np
+
+epsilon = 0.0000001
+
+def step_func(t):
+    if t > epsilon: return 1
+    else: return 0
+
+X = np.array([
+    [160, 55, 1],
+    [163, 43, 1],
+    [165, 48, 1],
+    [170, 80, 1],
+    [175, 76, 1],
+    [180, 70, 1]
+])
+
+y = np.array([0, 0, 0, 1, 1, 1])
+W = np.zeros(len(X[0]))
+
+def perceptron_fit(X, Y, epochs=20):
+    global W
+    eta = 0.2
+
+    for t in range(epochs):
+        print("epoch=", t, "======================")
+        for i in range(len(X)):
+            predict = step_func(np.dot(X[i], W))
+            error = Y[i] - predict
+            W += eta * error * X[i]
+            print("현재 처리 입력=",X[i],"정답=",Y[i],"출력=",predict,"변경된 가중치=", W)
+        print("================================")
+
+def perceptron_predict(X, Y):
+    global W
+    for x in X:
+         print(x[0], x[1], "->", step_func(np.dot(x, W)))
+
+perceptron_fit(X, y, 20)
+perceptron_predict(X, y)
+'''
+
+###
+
+#5장 9번 문제
+#퍼셉트론으로 아이리스 데이터 분류하기
+'''
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.linear_model import Perceptron
+from matplotlib import pyplot as plt
+
+epsilon = 0.0000001
+
+def step_func(t):
+    if t > epsilon: return 1
+    else: return 0
+
+iris = load_iris()
+X = iris.data[:, (0, 1)] #꽃의 너비와 높이만을 입력으로 함
+y = (iris.target == 0).astype(np.int64) #출력: "Iris Setosa인가 아닌가"
+
+percep = Perceptron(random_state=32)
+percep.fit(X, y)
+print(percep.score(X, y))
+print(percep.predict(X))
+
+#plt.scatter(X[:,0], X[:,1], c=y, s=100)
+#plt.xlabel("width")
+#plt.ylabel("height")
+
+#plt.show()
+
+#-------#
+
+#표준편차 이용(위의 방법보다 더 정확성이 높음)
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Perceptron
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+# Load the iris dataset
+iris = datasets.load_iris()
+
+# Create our X and y data
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+#ppn = Perceptron(tol=1e-3, eta0=0.2, random_state=0)
+ppn = Perceptron(max_iter=40, eta0=0.1, tol=1e-3, random_state=1) #max_iter->epochs
+# Train the perceptron
+ppn.fit(X_train, y_train)
+
+
+y_pred = ppn.predict(X_test)
+
+print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
+
+print("====================")
+
+
+sc = StandardScaler() #스케일링 : 전체 자료의 분포를 평균 0 표준편차 1이 되도록 변환
+sc.fit(X_train) #X_train의 평균과 표준편차를 구한다.
+X_train_std = sc.transform(X_train) #학습용 데이터를 입력으로 하여 transform 실행시 학습용 데이터를 표준화한다.
+X_test_std = sc.transform(X_test) #마찬가지로 테스트 데이터 표준화
+
+ml = Perceptron(n_iter_no_change=40, eta0=0.1, random_state=0)#eta0 : learning rate, n_iter : epochs over data
+ml.fit(X_train_std, y_train)
+y_pred = ml.predict(X_test_std)
+print("총 테스트 개수:%d, 오류개수:%d" %(len(y_test), (y_test != y_pred).sum()))
+print("정확도: %.2f" %accuracy_score(y_test, y_pred)) #accuracy_score() : y_test와 y_pred를 비교하여 정확도를 계산해줌
+'''
+
+###
+
+#breast_cancer Perceptron으로 분류하기
+from sklearn import datasets
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Perceptron
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+
+# Load the breast cancer dataset
+breast_cancer = datasets.load_breast_cancer()
+
+# Create our X and y data
+X = breast_cancer.data
+y = breast_cancer.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+#ppn = Perceptron(tol=1e-3, eta0=0.2, random_state=0)
+ppn = Perceptron(max_iter=40, eta0=0.1, tol=1e-3, random_state=1) #max_iter->epochs
+# Train the perceptron
+ppn.fit(X_train, y_train)
+
+
+y_pred = ppn.predict(X_test)
+
+print('Accuracy: %.2f' % accuracy_score(y_test, y_pred))
+
+print("====================")
+
+
+sc = StandardScaler() #스케일링 : 전체 자료의 분포를 평균 0 표준편차 1이 되도록 변환
+sc.fit(X_train) #X_train의 평균과 표준편차를 구한다.
+X_train_std = sc.transform(X_train) #학습용 데이터를 입력으로 하여 transform 실행시 학습용 데이터를 표준화한다.
+X_test_std = sc.transform(X_test) #마찬가지로 테스트 데이터 표준화
+
+ml = Perceptron(n_iter_no_change=40, eta0=0.1, random_state=0)#eta0 : learning rate, n_iter : epochs over data
+ml.fit(X_train_std, y_train)
+y_pred = ml.predict(X_test_std)
+print("총 테스트 개수:%d, 오류개수:%d" %(len(y_test), (y_test != y_pred).sum()))
+print("정확도: %.2f" %accuracy_score(y_test, y_pred)) #accuracy_score() : y_test와 y_pred를 비교하여 정확도를 계산해줌
