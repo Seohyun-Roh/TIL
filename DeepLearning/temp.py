@@ -430,7 +430,7 @@ ml.fit(X_train_std, y_train)
 y_pred = ml.predict(X_test_std)
 print("총 테스트 개수:%d, 오류개수:%d" %(len(y_test), (y_test != y_pred).sum()))
 print("정확도: %.2f" %accuracy_score(y_test, y_pred)) #accuracy_score() : y_test와 y_pred를 비교하여 정확도를 계산해줌
-'''
+
 
 ###
 
@@ -473,4 +473,152 @@ ml = Perceptron(n_iter_no_change=40, eta0=0.1, random_state=0)#eta0 : learning r
 ml.fit(X_train_std, y_train)
 y_pred = ml.predict(X_test_std)
 print("총 테스트 개수:%d, 오류개수:%d" %(len(y_test), (y_test != y_pred).sum()))
-print("정확도: %.2f" %accuracy_score(y_test, y_pred)) #accuracy_score() : y_test와 y_pred를 비교하여 정확도를 계산해줌
+print("정확도: %.2f" %accuracy_score(y_test, y_pred)) #accuracy_score() : y_test와 y_pred를 비교하여 정확도를 계산해줌'''
+
+###
+'''
+# p.201 MLP 순방향 패스
+import numpy as np
+
+def actf(x):
+    return 1/(1+np.exp(-x))
+
+def actf_deriv(x):
+    return x*(1-x)
+
+inputs, hiddens, outputs = 2, 2, 1
+learning_rate=0.2
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+T = np.array([[0], [1], [1], [0]])
+
+W1 = np.array([[0.10, 0.20], [0.30, 0.40]])
+W2 = np.array([[0.50], [0.60]])
+B1 = np.array([0.1, 0.2])
+B2 = np.array([0.3])
+
+def predict(x):
+    layer0 = x
+    Z1 = np.dot(layer0, W1)+B1
+    layer1 = actf(Z1)
+    Z2 = np.dot(layer1, W2)+B1
+    layer2 = actf(Z2)
+    return layer0, layer1, layer2
+
+def test():
+    for x, y in zip(X, T):
+        x = np.reshape(x, (1, -1))
+        layer0, layer1, layer2 = predict(x)
+        print(x, y, layer2)
+
+test()
+
+###
+
+# p.211 경사 하강법 실습
+
+x = 10
+learning_rate = 0.2
+precision = 0.00001
+max_iterations = 100
+
+loss_func = lambda x: (x-3)**2+10
+
+gradient = lambda x: 2*x-6
+
+for i in range(max_iterations):
+    x = x - learning_rate * gradient(x)
+    print("손실함수값(", x, ")=", loss_func(x))
+    
+print("최소값 = ", x)
+
+###
+
+# p.213 2차원 그래디언트 시각화
+
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.pyplot as plt
+
+x = np.arange(-5, 5, 0.5)
+y = np.arange(-5, 5, 0.5)
+X, Y = np.meshgrid(x, y)
+Z = X**2+Y**2
+
+fig = plt.figure(figsize=(6,6))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.plot_surface(X, Y, Z)
+plt.show()
+
+#
+
+x = np.arange(-5, 5, 0.5)
+y = np.arange(-5, 5, 0.5)
+X, Y = np.meshgrid(x, y)
+U = -2*X
+V = -2*Y
+
+plt.figure()
+Q = plt.quiver(X, Y, U, V, units = 'width')
+plt.show()
+'''
+###
+
+# p.224 넘파이만을 이용한 MLP 구현
+
+import numpy as np
+def actf(x):
+    return 1/(1+np.exp(-x))
+
+def actf_deriv(x):
+    return x*(1-x)
+
+inputs, hiddens, outputs = 2, 2, 1
+learning_rate=0.2
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+T = np.array([[1], [0], [0], [1]])
+
+W1 = 2*np.random.random((inputs, hiddens))-1
+W2 = 2*np.random.random((hiddens, outputs))-1
+B1 = np.zeros(hiddens)
+B2 = np.zeros(outputs)
+
+# 순방향 전파 계산
+def predict(x):
+    layer0 = x
+    Z1 = np.dot(layer0, W1)+B1
+    layer1 = actf(Z1)
+    Z2 = np.dot(layer1, W2)+B2
+    layer2 = actf(Z2)
+    # 00 01 10 11
+    # 
+    return layer0, layer1, layer2
+
+# 역방향 전파 계산
+def fit():
+         global W1, W2, B1, B2
+         for i in range(90000):
+             for x, y in zip(X, T):
+                 x = np.reshape(x, (1, -1))
+                 y = np.reshape(y, (1, -1))
+                 
+                 layer0, layer1, layer2 = predict(x)  #순방향 계산
+                 layer2_error = layer2-y
+                 layer2_delta = layer2_error*actf_deriv(layer2)
+                 layer1_error = np.dot(layer2_delta, W2.T)
+                 layer1_delta = layer1_error*actf_deriv(layer1)
+                 
+                 W2 += -learning_rate*np.dot(layer1.T, layer2_delta)
+                 W1 += -learning_rate*np.dot(layer0.T, layer1_delta)
+                 B2 += -learning_rate*np.sum(layer2_delta, axis=0)
+                 B1 += -learning_rate*np.sum(layer1_delta, axis=0)
+             
+def test():
+    for x, y in zip(X, T):
+        x = np.reshape(x, (1, -1))
+        layer0, layer1, layer2 = predict(x)
+        print(x, y, layer2)
+        
+fit()
+test()
