@@ -64,3 +64,49 @@ console.log(foo.constructor === Person);
 // Person() 생성자 함수를 생성한 객체는 Function() 생성자 함수이다.
 console.log(Person.constructor === Function);
 ```
+
+---
+
+## 4. Prototype chain
+
+특정 객체의 프로퍼티나 메소드에 접근하려고 할 때 해당 객체에 접근하려는 프로퍼티 또는 메소드가 없다면 [[Prototype]]이 가리키는 링크를 따라 자신의 부모 역할을 하는 프로토타입 객체의 프로퍼티나 메소드를 차례대로 검색
+
+#### 객체 생성 방법
+
+- 객체 리터럴
+- 생성자 함수
+- Object() 생성자 함수
+
+### 4.1 객체 리터럴 방식으로 생성된 객체의 프로토타입 체인
+
+객체 리터럴을 사용해 객체를 생성한 경우, 그 객체의 프로토타입 객체는 Object.prototype이다.
+
+### 4.2 생성자 함수로 생성된 객체의 프로토타입 체인
+
+생성자 함수로 객체를 생성하기 위해 생성자 함수 정의
+
+#### 함수 정의 방식
+
+- 함수 선언식(Function declaration)
+- 함수 표현식(Function expression)
+- Function() 생성자 함수
+
+#### 함수 표현식으로 함수 정의
+
+- 함수 리터럴 방식 사용
+- 
+```javascript
+var square = function(number) {
+  return number * number;
+};
+```
+
+#### 함수 선언식
+
+- 자바스크립트 엔진이 내부적으로 기명 함수 표현식으로 변환
+- 
+```javascript
+var square = function square(number) {
+  return number * number;
+};
+```
