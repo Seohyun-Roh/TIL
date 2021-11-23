@@ -1,279 +1,208 @@
-# p. 372 MNIST 필기체 숫자 인식
+# 예제: 스팸 메일 분류하기
+
+import numpy as np
+from tensorflow.keras.layers import Embedding, Flatten, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing.text import one_hot
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+docs = ['additional income',
+		'best price',
+		'big bucks',
+		'cash bonus',
+		'earn extra cash',
+		'spring savings certificate',
+		'valero gas marketing',
+		'all domestic employees',
+		'nominations for oct',
+		'confirmation from spinner']
+
+labels = np.array([1,1,1,1,1,0,0,0,0,0])
+
+vocab_size = 50
+encoded_docs = [one_hot(d, vocab_size) for d in docs]
+print(encoded_docs)
+
+max_length = 4
+padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
+print(padded_docs)
+
+model = Sequential()
+model.add(Embedding(vocab_size, 8, input_length=max_length))
+model.add(Flatten())
+model.add(Dense(1, activation='sigmoid'))
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+model.fit(padded_docs, labels, epochs=50, verbose=0)
+
+loss, accuracy = model.evaluate(padded_docs, labels, verbose=0)
+print('정확도=', accuracy)
+
+test_doc = ['big income']
+encoded_docs = [one_hot(d, vocab_size) for d in test_doc]
+padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
+
+print(model.predict(padded_docs))
+
+###
+'''
+# 예제: 다음 단어 예측하기
+
+import numpy as np
+from tensorflow.keras.layers import Embedding, Flatten, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing.text import one_hot
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.utils import to_categorical
+
+text_data="""Soft as the voice of an angel\n
+Breathing a lesson unhead\n
+Hope with a gentle persuasion\n
+Whispers her comforting word\n
+Wait till the darkness is over\n
+Wait till the tempest is done\n
+Hope for sunshine tomorrow\n
+After the shower
+"""
+
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts([text_data])
+encoded = tokenizer.texts_to_sequences([text_data])[0]
+print(encoded)
+
+print(tokenizer.word_index)
+vocab_size = len(tokenizer.word_index) + 1
+print('어휘 크기: %d' % vocab_size)
+
+sequences = list()
+for i in range(1, len(encoded)):
+	sequence = encoded[i-1:i+1]
+	sequences.append(sequence)
+print(sequences)
+print('총 시퀀스 개수: %d' % len(sequences))
+
+sequences = np.array(sequences)
+X, y = sequences[:,0],sequences[:,1]
+print("X=", X)
+print("y=", y)
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Dense, SimpleRNN, LSTM
+
+model = Sequential()
+model.add(Embedding(vocab_size, 10, input_length=1))
+model.add(LSTM(50))
+model.add(Dense(vocab_size, activation='softmax'))
+
+model.compile(loss='sparse_categorical_crossentropy', optimizer='adam',
+	metrics=['accuracy'])
+
+model.fit(X, y, epochs=500, verbose=2)
+
+# 테스트 단어를 정수 인코딩한다. 
+test_text = 'Wait'
+encoded = tokenizer.texts_to_sequences([test_text])[0]
+encoded = np.array(encoded)
+
+# 신경망의 예측값을 출력해본다. 
+onehot_output = model.predict(encoded)
+print('onehot_output=', onehot_output)
+
+# 가장 높은 출력을 내는 유닛을 찾는다. 
+output = np.argmax(onehot_output)
+print('output=', output)
+
+# 출력층의 유닛 번호를 단어로 바꾼다. 
+print(test_text, "=>", end=" ")
+for word, index in tokenizer.word_index.items():
+	if index == output:
+		print(word)
+
+
+###
+
+# 예제: 영화 리뷰 감성 판별하기
+
+import numpy as np
 
 import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
+from tensorflow import keras
 
-(train_images, train_labels), (test_images, test_labels) = datasets.mnist.load_data()
-train_images = train_images.reshape((60000, 28, 28, 1))
-test_images = test_images.reshape((10000, 28, 28, 1))
+import matplotlib.pyplot as plt
 
-# 픽셀 값을 0~1 사이로 정규화한다. 
-train_images, test_images = train_images / 255.0, test_images / 255.0
+imdb = keras.datasets.imdb
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=10000)
 
-model = models.Sequential()
+print(x_train[0])
 
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+# 단어 ->정수 인덱스 딕셔너리
+word_to_index = imdb.get_word_index()
 
-model.add(layers.Flatten())
-model.add(layers.Dense(64, activation='relu'))
-model.add(layers.Dense(10, activation='softmax'))
+# 처음 몇 개의 인덱스는 특수 용도로 사용된다. 
+word_to_index = {k:(v+3) for k,v in word_to_index.items()}
+word_to_index["<PAD>"] = 0		# 문장을 채우는 기호
+word_to_index["<START>"] = 1		# 시작을 표시
+word_to_index["<UNK>"] = 2  		# 알려지지 않은 토큰 
+word_to_index["<UNUSED>"] = 3
+
+index_to_word = dict([(value, key) for (key, value) in word_to_index.items()])
+
+print(' '.join([index_to_word[index] for index in x_train[0]]))
+
+from tensorflow.keras.preprocessing.sequence import pad_sequences 
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import *
+
+x_train = pad_sequences(x_train, maxlen=100)
+x_test = pad_sequences(x_test, maxlen=100)
+
+vocab_size = 10000
+
+model = Sequential()
+model.add(Embedding(vocab_size, 64,
+                    input_length=100))
+model.add(Flatten())
+model.add(Dense(64, activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(1, activation='sigmoid'))
 
 model.summary()
 
-model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-model.fit(train_images, train_labels, epochs=5)
-
-###
-
-# p.378 패션 아이템 CNN 사용한 것과 MLP 사용한 것 성능 비교
-'''
-import tensorflow as tf
-from tensorflow import keras
-import numpy as np
-import matplotlib.pyplot as plt
-from tensorflow.keras import datasets, layers, models
-
-fashion_mnist = keras.datasets.fashion_mnist
-(train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-
-train_images = train_images.reshape((60000, 28, 28, 1))
-test_images = test_images.reshape((10000, 28, 28, 1))
-
-# 픽셀 값을 0~1 사이로 정규화한다. 
-train_images, test_images = train_images / 255.0, test_images / 255.0
-
-model = models.Sequential()
-
-model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-model.add(layers.MaxPooling2D((2, 2)))
-model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-
-model.add(layers.Flatten(input_shape=(28, 28)))
-model.add(layers.Dense(128, activation='relu'))
-model.add(layers.Dense(10, activation='softmax'))
-
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
+model.compile(loss='binary_crossentropy', optimizer='adam',
               metrics=['accuracy'])
+history = model.fit(x_train, y_train,
+          batch_size=64, epochs=20, verbose=1,
+          validation_data=(x_test, y_test))
 
-model.fit(train_images, train_labels, epochs=5)
+results = model.evaluate(x_test, y_test, verbose=2)
+print(results)
 
-###
+review = """What can I say about this movie that was already said? It is my 
+favorite time travel sci-fi, adventure epic comedy in the 80's and I love
+this movie to death! When I saw this movie I was thrown out by its theme. An
+excellent sci-fi, adventure epic, I LOVE the 80s. It's simple the greatest time
+travel movie ever happened in the history of world cinema. I love this movie to
+death, I love, LOVE, love it!"""
 
-# p.387 CIFAR-10 영상 분류하기
+import re
+review = re.sub("[^0-9a-zA-Z ]", "", review).lower()
 
-import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import Sequential
-from tensorflow.keras.layers import *
+review_encoding = []
+# 리뷰의 각 단어 대하여 반복한다. 
+for w in review.split():
+		index = word_to_index.get(w, 2)	# 딕셔너리에 없으면 2 반환
+		if index <= 10000:		# 단어의 개수는 10000이하
+			review_encoding.append(index)
+		else:
+			review_encoding.append(word_to_index["UNK"])
 
-(X_train, y_train), (X_test, y_test) = keras.datasets.cifar10.load_data()
-
-plt.figure()
-plt.imshow(X_train[1])
-plt.colorbar()
-
-X_train = X_train/255.0
-X_test = X_test/255.0
-
-model = Sequential()
-model.add(Conv2D(64, activation = 'relu', kernel_size = (3,3 )))
-model.add(MaxPooling2D(pool_size = (2, 2)))
-model.add(Conv2D(32, activation = 'relu', kernel_size = (3,3 )))
-model.add(Flatten(input_shape = (32, 32, 3)))
-model.add(Dense(80, activation = 'relu'))
-model.add(Dense(10, activation = 'softmax'))
-
-model.compile(optimizer = 'adam', loss = 'sparse_categorical_crossentropy',
-              metrics = ['accuracy'])
-history = model.fit(X_train, y_train, epochs=10, verbose=1, validation_split=0.3)
-
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['loss', 'val_loss'], loc = 'lower right')
-plt.show()
-
-plt.figure()
-plt.imshow(X_test[0])
-y_pred = model.predict(X_test)
-print("정답=", y_test[0])
-print("예측값=", y_pred[0])
-
-###
-
-# p.391 데이터 증대
-
-import tensorflow as tf
-import matplotlib.pyplot as plt
-from numpy import expand_dims
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
-
-image = load_img("dog.jpg")
-array = img_to_array(image)
-sample = expand_dims(array, axis=0)
-
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-datagen = ImageDataGenerator(rescale = 1./255,
-                             rotation_range=90, brightness_range=[0.8, 1.0],
-                             width_shift_range=0.2, zoom_range=[0.8, 1.2],
-                             height_shift_range=0.2)
-
-obj = datagen.flow(sample, batch_size=1)
-
-obj = datagen.flow(sample, batch_size=1)
-fig = plt.figure(figsize=(20,5))
-
-for i in range(8):
-	plt.subplot(1,8,i+1)
-	image = obj.next()
-	plt.imshow(image[0])
-
-
-###
-
-# p. 393 강아지와 고양이 구별하기
-
-from matplotlib import pyplot
-from matplotlib.image import imread
-
-image = imread('./Petimages/train/dog/1.jpg')
-pyplot.imshow(image)
-pyplot.show()
-
-from tensorflow.keras import models, layers
-
-train_dir = './Petimages/train'
-test_dir = './Petimages/test'
-
-model = models.Sequential()
-model.add(layers.Conv2D(32,(3,3), activation='relu', input_shape=(128,128,3)))
-model.add(layers.MaxPooling2D(2,2))
-model.add(layers.Conv2D(64,(3,3), activation='relu'))
-model.add(layers.MaxPooling2D(2,2))
-model.add(layers.Flatten())
-model.add(layers.Dense(units=512, activation='relu'))
-model.add(layers.Dense(units=1, activation='sigmoid'))
-
-model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-train_datagen = ImageDataGenerator(rescale = 1./255, shear_range = 0.2,
-  zoom_range = 0.2, horizontal_flip = True)
-
-test_datagen = ImageDataGenerator(rescale = 1./255)
-
-train_generator = train_datagen.flow_from_directory(
-    train_dir,                      
-    target_size=(128, 128), 
-    batch_size=20,
-    class_mode = 'binary')
-
-test_generator = test_datagen.flow_from_directory(
-    test_dir,
-    target_size=(128, 128),
-    batch_size=20,
-    class_mode = 'binary')
-
-history = model.fit_generator(
-    train_generator, steps_per_epoch = 100, epochs=10, 
-    validation_data=test_generator, validation_steps=5)
-
-import matplotlib.pyplot as plt
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.xlabel('Epoch')
-plt.xlabel('Accuracy')
-plt.legend(['Train', 'Test'], loc='upper left')
-plt.show()
-
-import matplotlib.pyplot as plt
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.xlabel('Epoch')
-plt.xlabel('Accuracy')
-plt.legend(['Train', 'Test'], loc='upper left')
-plt.show()
-
-###
-
-# P.403 ResNet 50을 이용하여 강아지 인식
-
-from tensorflow.keras.applications.resnet50 import ResNet50
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
-import numpy as np
-
-model = ResNet50(weights='imagenet')
-
-img_path = 'dog.jpg'
-img = image.load_img(img_path, target_size=(224, 224))	# 영상 크기를 변경하고 적재한다.
-x = image.img_to_array(img)	# 영상을 넘파이 배열로 변환한다. 
-x = np.expand_dims(x, axis=0)	# 차원을 하나 늘인다. 배치 크기가 필요하다. 
-x = preprocess_input(x)	# ResNet50이 요구하는 전처리를 한다. 
-
-preds = model.predict(x)
-print('예측:', decode_predictions(preds, top=3)[0])
-
-
-###
-
-# P.404 MobileNet을 이용하여 강아지와 고양이 구별
-
-import numpy as np
-import matplotlib.pyplot as plt
-from tensorflow.keras.layers import Dense,GlobalAveragePooling2D
-from tensorflow.keras.applications import MobileNet
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.mobilenet import preprocess_input
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam
-
-base_model=MobileNet(weights='imagenet',include_top=False) #imports the mobilenet model and discards the last 1000 neuron layer.
-
-x=base_model.output
-x=GlobalAveragePooling2D()(x)
-x=Dense(1024,activation='relu')(x) 
-x=Dense(1024,activation='relu')(x) 
-x=Dense(512,activation='relu')(x) 
-preds=Dense(2,activation='softmax')(x) 
-
-model=Model(inputs=base_model.input,outputs=preds)
-
-for layer in model.layers[:20]:
-    layer.trainable=False
-for layer in model.layers[20:]:
-    layer.trainable=True
-
-
-train_datagen=ImageDataGenerator(preprocessing_function=preprocess_input) 
-
-train_generator=train_datagen.flow_from_directory('./Petimages/', 
-                                                 target_size=(128,128),
-                                                 color_mode='rgb',
-                                                 batch_size=32,
-                                                 class_mode='categorical',
-                                                 shuffle=True)
-
-
-model.compile(optimizer='Adam',loss='categorical_crossentropy',metrics=['accuracy'])
-
-step_size_train=train_generator.n//train_generator.batch_size
-model.fit_generator(generator=train_generator,
-                   steps_per_epoch=step_size_train,
-                   epochs=5)
+# 2차원 리스트로 전달하여야 한다. 
+test_input = pad_sequences([review_encoding], maxlen = 100) 
+value = model.predict(test_input) # 예측
+if(value > 0.5):
+	print("긍정적인 리뷰입니다.")
+else:
+	print("부정적인 리뷰입니다.")
 '''
-
