@@ -88,10 +88,12 @@
     model.fit(train_images, train_labels, epochs=5)
     ```
 
-    MLP
+    #### MLP
+
     ![image](https://user-images.githubusercontent.com/76952602/143684455-8dea0480-8233-45bb-982c-a5fb3af2eb51.png)
 
-    CNN
+    #### CNN
+
     ![image](https://user-images.githubusercontent.com/76952602/143684464-3f69ce92-561b-417c-86a6-0197909ef420.png)
 
 CNN을 사용하는 것이 시간은 오래걸리지만 정확하다.
