@@ -42,7 +42,7 @@ print(result)
 - [ ] https://www.acmicpc.net/problem/11000
 - [ ] https://www.acmicpc.net/problem/2217
 - [ ] https://www.acmicpc.net/problem/13458
-- [ ] https://www.acmicpc.net/problem/1946
+- [x] https://www.acmicpc.net/problem/1946
 - [ ] https://www.acmicpc.net/problem/12845
 - [ ] https://www.acmicpc.net/problem/2873
 - [ ] https://www.acmicpc.net/problem/1744
