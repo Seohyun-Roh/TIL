@@ -37,7 +37,7 @@ print(result)
 ## [문제 추천]
 
 - [x] https://www.acmicpc.net/problem/1700
-- [ ] https://www.acmicpc.net/problem/2875
+- [x] https://www.acmicpc.net/problem/2875
 - [ ] https://www.acmicpc.net/problem/1783
 - [ ] https://www.acmicpc.net/problem/11000
 - [ ] https://www.acmicpc.net/problem/2217
