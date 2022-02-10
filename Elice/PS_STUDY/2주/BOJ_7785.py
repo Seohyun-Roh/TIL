@@ -1,7 +1,6 @@
 # 7785번 회사에 있는 사람
 
 import sys
-
 input = sys.stdin.readline
 
 n = int(input())
