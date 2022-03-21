@@ -49,10 +49,10 @@ print(x, y, end=' ')
 
 ### 브론즈/실버 난이도
 
-- [ ] https://www.acmicpc.net/problem/10798
+- [x] https://www.acmicpc.net/problem/10798
 - [x] https://www.acmicpc.net/problem/2490
 - [x] https://www.acmicpc.net/problem/2884
-- [ ] https://www.acmicpc.net/problem/3048
+- [x] https://www.acmicpc.net/problem/3048
 - [ ] https://www.acmicpc.net/problem/2980
 - [ ] https://www.acmicpc.net/problem/1063
 - [ ] https://www.acmicpc.net/problem/8979
