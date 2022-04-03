@@ -53,7 +53,7 @@ print(x, y, end=' ')
 - [x] https://www.acmicpc.net/problem/2490
 - [x] https://www.acmicpc.net/problem/2884
 - [x] https://www.acmicpc.net/problem/3048
-- [ ] https://www.acmicpc.net/problem/2980
+- [x] https://www.acmicpc.net/problem/2980
 - [ ] https://www.acmicpc.net/problem/1063
 - [ ] https://www.acmicpc.net/problem/8979
 - [ ] https://www.acmicpc.net/problem/2563
